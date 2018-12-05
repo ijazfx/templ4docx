@@ -1,7 +1,6 @@
 package pl.jsolve.templ4docx.core;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -13,6 +12,7 @@ import java.util.List;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.docx4j.Docx4J;
+import org.docx4j.model.fields.FieldUpdater;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 
 import pl.jsolve.sweetener.io.Resources;
@@ -163,12 +163,12 @@ public class Docx implements Serializable {
 	 */
 	public void saveToPdf(String outputPath) {
 		try {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			docx.write(baos);
-			baos.close();
-			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-			WordprocessingMLPackage wordprocessingMLPackage = WordprocessingMLPackage.load(bais);
-			Docx4J.toPDF(wordprocessingMLPackage, new FileOutputStream(outputPath));
+			File intermediateFile = File.createTempFile("qbb", "");
+			docx.write(new FileOutputStream(intermediateFile));
+			WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.load(intermediateFile);
+			FieldUpdater updater = new FieldUpdater(wordMLPackage);
+			updater.update(true);
+			Docx4J.toPDF(wordMLPackage, new FileOutputStream(outputPath));
 		} catch (Exception ex) {
 			throw new OpenDocxException(ex.getMessage(), ex.getCause());
 		}
@@ -180,12 +180,12 @@ public class Docx implements Serializable {
 	 */
 	public void saveToPdf(OutputStream outputStream) {
 		try {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			docx.write(baos);
-			baos.close();
-			ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
-			WordprocessingMLPackage wordprocessingMLPackage = WordprocessingMLPackage.load(bais);
-			Docx4J.toPDF(wordprocessingMLPackage, outputStream);
+			File intermediateFile = File.createTempFile("qbb", "");
+			docx.write(new FileOutputStream(intermediateFile));
+			WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.load(intermediateFile);
+			FieldUpdater updater = new FieldUpdater(wordMLPackage);
+			updater.update(true);
+			Docx4J.toPDF(wordMLPackage, outputStream);
 		} catch (Exception ex) {
 			throw new OpenDocxException(ex.getMessage(), ex.getCause());
 		}

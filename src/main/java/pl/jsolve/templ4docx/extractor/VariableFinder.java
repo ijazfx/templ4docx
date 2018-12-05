@@ -63,13 +63,13 @@ public class VariableFinder {
 				inserts.addAll(find(paragraph, document, null, keys));
 			}
 		}
-		// find and replace in headers
+		// find and replace in footers
 		for (XWPFFooter footer : document.getFooterList()) {
 			for (XWPFParagraph paragraph : footer.getParagraphs()) {
 				inserts.addAll(find(paragraph, document, null, keys));
 			}
 		}
-		// find and replace in headers
+		// find and replace in footnotes
 		for (XWPFFootnote footnote : document.getFootnotes()) {
 			for (XWPFParagraph paragraph : footnote.getParagraphs()) {
 				inserts.addAll(find(paragraph, document, null, keys));
